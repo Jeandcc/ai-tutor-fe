@@ -76,6 +76,9 @@ export default function Playground({
   const localVideoTrack = localTracks.find(
     ({ source }) => source === Track.Source.Camera
   );
+  const screenTrack = localTracks.find(
+    ({ source }) => source === Track.Source.ScreenShare
+  );
   const localMicTrack = localTracks.find(
     ({ source }) => source === Track.Source.Microphone
   );
@@ -285,6 +288,22 @@ export default function Playground({
             </div>
           </ConfigurationPanelItem>
         )}
+        {
+          <ConfigurationPanelItem
+            title="Screen share"
+            deviceSelectorKind="videoinput"
+            isScreenShare
+          >
+            {screenTrack && (
+              <div className="relative">
+                <VideoTrack
+                  className="rounded-sm border border-gray-800 opacity-70 w-full"
+                  trackRef={screenTrack}
+                />
+              </div>
+            )}
+          </ConfigurationPanelItem>
+        }
         {localMicTrack && (
           <ConfigurationPanelItem
             title="Microphone"

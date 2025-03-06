@@ -7,12 +7,14 @@ type ConfigurationPanelItemProps = {
   title: string;
   children?: ReactNode;
   deviceSelectorKind?: MediaDeviceKind;
+  isScreenShare?: boolean;
 };
 
 export const ConfigurationPanelItem: React.FC<ConfigurationPanelItemProps> = ({
   children,
   title,
   deviceSelectorKind,
+  isScreenShare,
 }) => {
   return (
     <div className="w-full text-gray-300 py-4 border-b border-b-gray-800 relative">
@@ -23,12 +25,17 @@ export const ConfigurationPanelItem: React.FC<ConfigurationPanelItemProps> = ({
             <TrackToggle
               className="px-2 py-1 bg-gray-900 text-gray-300 border border-gray-800 rounded-sm hover:bg-gray-800"
               source={
-                deviceSelectorKind === "audioinput"
+                isScreenShare
+                  ? Track.Source.ScreenShare
+                  : deviceSelectorKind === "audioinput"
                   ? Track.Source.Microphone
                   : Track.Source.Camera
               }
             />
-            <PlaygroundDeviceSelector kind={deviceSelectorKind} />
+
+            {!isScreenShare && (
+              <PlaygroundDeviceSelector kind={deviceSelectorKind} />
+            )}
           </span>
         )}
       </div>

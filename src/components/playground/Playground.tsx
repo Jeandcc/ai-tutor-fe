@@ -224,6 +224,44 @@ export default function Playground({
           </ConfigurationPanelItem>
         )}
 
+        {localVideoTrack && (
+          <ConfigurationPanelItem
+            title="Camera"
+            deviceSelectorKind="videoinput"
+          >
+            <div className="relative">
+              <VideoTrack
+                className="rounded-sm border border-gray-800 opacity-70 w-full"
+                trackRef={localVideoTrack}
+              />
+            </div>
+          </ConfigurationPanelItem>
+        )}
+        {
+          <ConfigurationPanelItem
+            title="Screen share"
+            deviceSelectorKind="videoinput"
+            isScreenShare
+          >
+            {screenTrack && (
+              <div className="relative">
+                <VideoTrack
+                  className="rounded-sm border border-gray-800 opacity-70 w-full"
+                  trackRef={screenTrack}
+                />
+              </div>
+            )}
+          </ConfigurationPanelItem>
+        }
+        {localMicTrack && (
+          <ConfigurationPanelItem
+            title="Microphone"
+            deviceSelectorKind="audioinput"
+          >
+            <AudioInputTile trackRef={localMicTrack} />
+          </ConfigurationPanelItem>
+        )}
+
         <ConfigurationPanelItem title="Settings">
           {localParticipant && (
             <div className="flex flex-col gap-2">
@@ -275,43 +313,7 @@ export default function Playground({
             />
           </div>
         </ConfigurationPanelItem>
-        {localVideoTrack && (
-          <ConfigurationPanelItem
-            title="Camera"
-            deviceSelectorKind="videoinput"
-          >
-            <div className="relative">
-              <VideoTrack
-                className="rounded-sm border border-gray-800 opacity-70 w-full"
-                trackRef={localVideoTrack}
-              />
-            </div>
-          </ConfigurationPanelItem>
-        )}
-        {
-          <ConfigurationPanelItem
-            title="Screen share"
-            deviceSelectorKind="videoinput"
-            isScreenShare
-          >
-            {screenTrack && (
-              <div className="relative">
-                <VideoTrack
-                  className="rounded-sm border border-gray-800 opacity-70 w-full"
-                  trackRef={screenTrack}
-                />
-              </div>
-            )}
-          </ConfigurationPanelItem>
-        }
-        {localMicTrack && (
-          <ConfigurationPanelItem
-            title="Microphone"
-            deviceSelectorKind="audioinput"
-          >
-            <AudioInputTile trackRef={localMicTrack} />
-          </ConfigurationPanelItem>
-        )}
+
         <div className="w-full">
           <ConfigurationPanelItem title="Color">
             <ColorPicker
@@ -423,7 +425,7 @@ export default function Playground({
           />
         </div>
         <div
-          className={`flex-col grow basis-1/2 gap-4 h-full hidden lg:${
+          className={`flex-col grow basis-1/6 gap-4 h-full hidden lg:${
             !config.settings.outputs.audio && !config.settings.outputs.video
               ? "hidden"
               : "flex"

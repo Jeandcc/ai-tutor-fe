@@ -23,6 +23,7 @@ import {
   useDataChannel,
   useLocalParticipant,
   useRoomInfo,
+  useTrackToggle,
   useTracks,
   useVoiceAssistant,
 } from "@livekit/components-react";
@@ -67,7 +68,12 @@ export default function Playground({
   const voiceAssistant = useVoiceAssistant();
 
   const roomState = useConnectionState();
+
   const tracks = useTracks();
+
+  const { enabled: userCameraTrackIsEnabled } = useTrackToggle({
+    source: Track.Source.Camera,
+  });
 
   useEffect(() => {
     if (roomState === ConnectionState.Connected) {
@@ -121,7 +127,7 @@ export default function Playground({
 
   useDataChannel(onDataReceived);
 
-  const videoTileContent = useMemo(() => {
+  const aiTutorVideoTile = useMemo(() => {
     const videoFitClassName = `object-${config.video_fit || "cover"}`;
 
     const disconnectedContent = (
@@ -231,80 +237,18 @@ export default function Playground({
     return (
       <div className="flex flex-col gap-4 h-full w-full items-start overflow-y-auto">
         {config.description && (
-          <ConfigurationPanelItem title="Description">
+          <ConfigurationPanelItem
+            title="Description"
+            childrenClassName="text-base"
+          >
             {config.description}
           </ConfigurationPanelItem>
         )}
 
-        {config.settings.outputs.audio && (
-          <ConfigurationPanelItem title="AI Tutor Audio">
-            {audioTileContent}
-          </ConfigurationPanelItem>
-        )}
-
-        {config.settings.outputs.video && (
-          <ConfigurationPanelItem title="AI Tutor Video">
-            {videoTileContent}
-          </ConfigurationPanelItem>
-        )}
-
-        {localVideoTrack && (
-          <ConfigurationPanelItem
-            title="Camera"
-            deviceSelectorKind="videoinput"
-          >
-            <div className="relative">
-              <VideoTrack
-                className="rounded-sm border border-gray-800 opacity-70 w-full"
-                trackRef={localVideoTrack}
-              />
-            </div>
-          </ConfigurationPanelItem>
-        )}
-        {
-          <ConfigurationPanelItem
-            title="Screen share"
-            deviceSelectorKind="videoinput"
-            isScreenShare
-          >
-            {screenTrack && (
-              <div className="relative">
-                <VideoTrack
-                  className="rounded-sm border border-gray-800 opacity-70 w-full"
-                  trackRef={screenTrack}
-                />
-              </div>
-            )}
-          </ConfigurationPanelItem>
-        }
-        {localMicTrack && (
-          <ConfigurationPanelItem
-            title="Microphone"
-            deviceSelectorKind="audioinput"
-          >
-            <AudioInputTile trackRef={localMicTrack} />
-          </ConfigurationPanelItem>
-        )}
-
-        <ConfigurationPanelItem title="Settings">
-          {localParticipant && (
-            <div className="flex flex-col gap-2">
-              <NameValueRow
-                name="Room"
-                value={name}
-                valueColor={`${config.settings.theme_color}-500`}
-              />
-              <NameValueRow
-                name="Participant"
-                value={localParticipant.identity}
-              />
-            </div>
-          )}
-        </ConfigurationPanelItem>
         <ConfigurationPanelItem title="Status">
           <div className="flex flex-col gap-2">
             <NameValueRow
-              name="Room connected"
+              name="Room Connection"
               value={
                 roomState === ConnectionState.Connecting ? (
                   <LoadingSVG diameter={16} strokeWidth={2} />
@@ -319,7 +263,7 @@ export default function Playground({
               }
             />
             <NameValueRow
-              name="Agent connected"
+              name="AI Tutor Connection"
               value={
                 voiceAssistant.agent ? (
                   "TRUE"
@@ -338,7 +282,81 @@ export default function Playground({
           </div>
         </ConfigurationPanelItem>
 
-        <div className="w-full">
+        {roomState === ConnectionState.Connected &&
+          voiceAssistant.agent &&
+          config.settings.outputs.audio && (
+            <ConfigurationPanelItem title="AI Tutor Audio">
+              {audioTileContent}
+            </ConfigurationPanelItem>
+          )}
+
+        {roomState === ConnectionState.Connected &&
+          voiceAssistant.agent &&
+          config.settings.outputs.video && (
+            <ConfigurationPanelItem title="AI Tutor Video">
+              {aiTutorVideoTile}
+            </ConfigurationPanelItem>
+          )}
+
+        {roomState === ConnectionState.Connected && (
+          <ConfigurationPanelItem
+            title="Camera"
+            deviceSelectorKind="videoinput"
+          >
+            {userCameraTrackIsEnabled && (
+              <div className="relative">
+                <VideoTrack
+                  className="rounded-sm border border-gray-800 opacity-70 w-full"
+                  trackRef={localVideoTrack}
+                />
+              </div>
+            )}
+          </ConfigurationPanelItem>
+        )}
+
+        {roomState === ConnectionState.Connected && (
+          <ConfigurationPanelItem
+            title="Screen share"
+            deviceSelectorKind="videoinput"
+            isScreenShare
+          >
+            {screenTrack && (
+              <div className="relative">
+                <VideoTrack
+                  className="rounded-sm border border-gray-800 opacity-70 w-full"
+                  trackRef={screenTrack}
+                />
+              </div>
+            )}
+          </ConfigurationPanelItem>
+        )}
+
+        {roomState === ConnectionState.Connected && (
+          <ConfigurationPanelItem
+            title="Microphone"
+            deviceSelectorKind="audioinput"
+          >
+            {localMicTrack && <AudioInputTile trackRef={localMicTrack} />}
+          </ConfigurationPanelItem>
+        )}
+
+        {/* <ConfigurationPanelItem title="Settings">
+          {localParticipant && (
+            <div className="flex flex-col gap-2">
+              <NameValueRow
+                name="Room"
+                value={name}
+                valueColor={`${config.settings.theme_color}-500`}
+              />
+              <NameValueRow
+                name="Participant"
+                value={localParticipant.identity}
+              />
+            </div>
+          )}
+        </ConfigurationPanelItem> */}
+
+        {/* <div className="w-full">
           <ConfigurationPanelItem title="Color">
             <ColorPicker
               colors={themeColors}
@@ -350,7 +368,8 @@ export default function Playground({
               }}
             />
           </ConfigurationPanelItem>
-        </div>
+        </div> */}
+
         {config.show_qr && (
           <div className="w-full">
             <ConfigurationPanelItem title="QR Code">
@@ -364,17 +383,18 @@ export default function Playground({
     config.description,
     config.settings,
     config.show_qr,
-    localParticipant,
-    name,
+    // localParticipant,
+    // name,
     roomState,
     localVideoTrack,
     localMicTrack,
-    themeColors,
-    setUserSettings,
+    // themeColors,
+    // setUserSettings,
     voiceAssistant.agent,
-    videoTileContent,
+    aiTutorVideoTile,
     audioTileContent,
     screenTrack,
+    userCameraTrackIsEnabled,
   ]);
 
   let mobileTabs: PlaygroundTab[] = [];
@@ -386,7 +406,7 @@ export default function Playground({
           className="w-full h-full grow"
           childrenClassName="justify-center"
         >
-          {videoTileContent}
+          {aiTutorVideoTile}
         </PlaygroundTile>
       ),
     });
@@ -491,14 +511,16 @@ export default function Playground({
           </PlaygroundTile>
         )}
 
-        {config.settings.chat && (
-          <PlaygroundTile
-            title="Chat"
-            className="h-full grow basis-1/4 hidden lg:flex"
-          >
-            {chatTileContent}
-          </PlaygroundTile>
-        )}
+        {roomState === ConnectionState.Connected &&
+          voiceAssistant.agent &&
+          config.settings.chat && (
+            <PlaygroundTile
+              title="Chat"
+              className="h-full grow basis-1/4 hidden lg:flex"
+            >
+              {chatTileContent}
+            </PlaygroundTile>
+          )}
 
         <PlaygroundTile
           padding={false}

@@ -6,6 +6,7 @@ import { Track } from "livekit-client";
 type ConfigurationPanelItemProps = {
   title: string;
   children?: ReactNode;
+  childrenClassName?: string;
   deviceSelectorKind?: MediaDeviceKind;
   isScreenShare?: boolean;
 };
@@ -15,6 +16,7 @@ export const ConfigurationPanelItem: React.FC<ConfigurationPanelItemProps> = ({
   title,
   deviceSelectorKind,
   isScreenShare,
+  childrenClassName,
 }) => {
   return (
     <div className="w-full text-gray-300 py-4 border-b border-b-gray-800 relative">
@@ -39,7 +41,9 @@ export const ConfigurationPanelItem: React.FC<ConfigurationPanelItemProps> = ({
           </span>
         )}
       </div>
-      <div className="px-4 py-2 text-xs text-gray-500 leading-normal">
+      <div
+        className={`px-4 py-2 text-xs text-gray-500 leading-normal ${childrenClassName}`}
+      >
         {children}
       </div>
     </div>

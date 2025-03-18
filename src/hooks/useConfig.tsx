@@ -24,6 +24,7 @@ export type UserSettings = {
   editable: boolean;
   theme_color: string;
   chat: boolean;
+  whiteboard: boolean;
   inputs: {
     camera: boolean;
     mic: boolean;
@@ -45,6 +46,7 @@ const defaultConfig: AppConfig = {
     editable: true,
     theme_color: "cyan",
     chat: true,
+    whiteboard: true,
     inputs: {
       camera: true,
       mic: true,
@@ -110,6 +112,7 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
     return {
       editable: true,
       chat: params.get("chat") === "1",
+      whiteboard: params.get("whiteboard") === "1",
       theme_color: params.get("theme_color"),
       inputs: {
         camera: params.get("cam") === "1",
@@ -167,16 +170,16 @@ export const ConfigProvider = ({ children }: { children: React.ReactNode }) => {
       }
       return appConfigFromSettings;
     }
-    const cookieSettigs = getSettingsFromCookies();
+    const cookieSettings = getSettingsFromCookies();
     const urlSettings = getSettingsFromUrl();
-    if (!cookieSettigs) {
+    if (!cookieSettings) {
       if (urlSettings) {
         setCookieSettings(urlSettings);
       }
     }
     if (!urlSettings) {
-      if (cookieSettigs) {
-        setUrlSettings(cookieSettigs);
+      if (cookieSettings) {
+        setUrlSettings(cookieSettings);
       }
     }
     const newCookieSettings = getSettingsFromCookies();

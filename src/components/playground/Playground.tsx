@@ -1,5 +1,7 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import { LoadingSVG } from "@/components/button/LoadingSVG";
 import { ChatMessageType } from "@/components/chat/ChatTile";
 import { ColorPicker } from "@/components/colorPicker/ColorPicker";
@@ -41,6 +43,13 @@ export interface PlaygroundProps {
 }
 
 const headerHeight = 56;
+
+const ExcalidrawWrapper = dynamic(
+  async () => (await import("@/components/ExcalidrawWrapper")).default,
+  {
+    ssr: false,
+  }
+);
 
 export default function Playground({
   logo,
@@ -198,7 +207,7 @@ export default function Playground({
     return visualizerContent;
   }, [
     voiceAssistant.audioTrack,
-    config.settings.theme_color,
+    // config.settings.theme_color,
     roomState,
     voiceAssistant.state,
   ]);
@@ -221,6 +230,18 @@ export default function Playground({
         {config.description && (
           <ConfigurationPanelItem title="Description">
             {config.description}
+          </ConfigurationPanelItem>
+        )}
+
+        {config.settings.outputs.audio && (
+          <ConfigurationPanelItem title="AI Tutor Audio">
+            {audioTileContent}
+          </ConfigurationPanelItem>
+        )}
+
+        {config.settings.outputs.video && (
+          <ConfigurationPanelItem title="AI Tutor Video">
+            {videoTileContent}
           </ConfigurationPanelItem>
         )}
 
@@ -348,6 +369,9 @@ export default function Playground({
     themeColors,
     setUserSettings,
     voiceAssistant.agent,
+    videoTileContent,
+    audioTileContent,
+    screenTrack,
   ]);
 
   let mobileTabs: PlaygroundTab[] = [];
@@ -424,32 +448,15 @@ export default function Playground({
             initialTab={mobileTabs.length - 1}
           />
         </div>
-        <div
-          className={`flex-col grow basis-1/6 gap-4 h-full hidden lg:${
-            !config.settings.outputs.audio && !config.settings.outputs.video
-              ? "hidden"
-              : "flex"
-          }`}
-        >
-          {config.settings.outputs.video && (
-            <PlaygroundTile
-              title="Video"
-              className="w-full h-full grow"
-              childrenClassName="justify-center"
-            >
-              {videoTileContent}
-            </PlaygroundTile>
-          )}
-          {config.settings.outputs.audio && (
-            <PlaygroundTile
-              title="Audio"
-              className="w-full h-full grow"
-              childrenClassName="justify-center"
-            >
-              {audioTileContent}
-            </PlaygroundTile>
-          )}
-        </div>
+
+        {config.settings.whiteboard && (
+          <PlaygroundTile
+            title="Whiteboard"
+            className="h-full grow basis-2/4 flex"
+          >
+            <ExcalidrawWrapper />
+          </PlaygroundTile>
+        )}
 
         {config.settings.chat && (
           <PlaygroundTile
@@ -459,6 +466,7 @@ export default function Playground({
             {chatTileContent}
           </PlaygroundTile>
         )}
+
         <PlaygroundTile
           padding={false}
           backgroundColor="gray-950"

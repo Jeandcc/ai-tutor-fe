@@ -58,7 +58,10 @@ export default function Playground({
 }: PlaygroundProps) {
   const { config, setUserSettings } = useConfig();
   const { name } = useRoomInfo();
+
   const [transcripts, setTranscripts] = useState<ChatMessageType[]>([]);
+  const [showScreenSharePrompt, setShowScreenSharePrompt] = useState(false);
+
   const { localParticipant } = useLocalParticipant();
 
   const voiceAssistant = useVoiceAssistant();
@@ -437,6 +440,27 @@ export default function Playground({
           onConnect(roomState === ConnectionState.Disconnected)
         }
       />
+
+      {showScreenSharePrompt && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-10">
+          <div className="bg-white p-4 rounded-lg shadow-lg text-center">
+            <p className="mb-4">
+              In order to use the dashboard, please share this window so the AI
+              Tutor can see it.
+            </p>
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+              onClick={async () => {
+                setShowScreenSharePrompt(false);
+                await localParticipant.setScreenShareEnabled(true);
+              }}
+            >
+              Share Screen
+            </button>
+          </div>
+        </div>
+      )}
+
       <div
         className={`flex gap-4 py-4 grow w-full selection:bg-${config.settings.theme_color}-900`}
         style={{ height: `calc(100% - ${headerHeight}px)` }}
@@ -454,7 +478,16 @@ export default function Playground({
             title="Whiteboard"
             className="h-full grow basis-2/4 flex"
           >
-            <ExcalidrawWrapper />
+            <div
+              onClick={() =>
+                !screenTrack &&
+                roomState === ConnectionState.Connected &&
+                setShowScreenSharePrompt(true)
+              }
+              className="w-full h-full"
+            >
+              <ExcalidrawWrapper />
+            </div>
           </PlaygroundTile>
         )}
 

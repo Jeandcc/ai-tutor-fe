@@ -54,9 +54,12 @@ export const ConnectionProvider = ({
           throw new Error("NEXT_PUBLIC_LIVEKIT_URL is not set");
         }
         url = process.env.NEXT_PUBLIC_LIVEKIT_URL;
-        const { accessToken } = await fetch("/api/token").then((res) =>
-          res.json()
-        );
+
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const { accessToken } = await fetch(
+          `/api/token?tutor=${urlParams.get("tutor") || ""}`
+        ).then((res) => res.json());
         token = accessToken;
       } else {
         token = config.settings.token;

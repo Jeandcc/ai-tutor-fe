@@ -8,6 +8,8 @@ import { TokenResult } from "../../lib/types";
 const apiKey = process.env.LIVEKIT_API_KEY;
 const apiSecret = process.env.LIVEKIT_API_SECRET;
 
+const DEFAULT_TUTOR = "abby";
+
 const createToken = (userInfo: AccessTokenOptions, grant: VideoGrant) => {
   const at = new AccessToken(apiKey, apiSecret, userInfo);
   at.addGrant(grant);
@@ -18,6 +20,9 @@ export default async function handleToken(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  const urlParams = new URLSearchParams(req.url?.split("?")[1]);
+  const selectedTutor = urlParams.get("tutor");
+
   try {
     if (!apiKey || !apiSecret) {
       res.statusMessage = "Environment variables aren't set up correctly";
@@ -36,7 +41,10 @@ export default async function handleToken(
       canSubscribe: true,
     };
 
-    const token = await createToken({ identity }, grant);
+    const token = await createToken(
+      { identity, attributes: { tutor: selectedTutor || DEFAULT_TUTOR } },
+      grant
+    );
     const result: TokenResult = {
       identity,
       accessToken: token,

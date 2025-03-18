@@ -8,7 +8,7 @@ import { TokenResult } from "../../lib/types";
 const apiKey = process.env.LIVEKIT_API_KEY;
 const apiSecret = process.env.LIVEKIT_API_SECRET;
 
-const DEFAULT_TUTOR = "abby";
+const DEFAULT_TUTOR = "ondre";
 
 const createToken = (userInfo: AccessTokenOptions, grant: VideoGrant) => {
   const at = new AccessToken(apiKey, apiSecret, userInfo);
@@ -30,8 +30,10 @@ export default async function handleToken(
       return;
     }
 
-    const roomName = `room-${generateRandomAlphanumeric(4)}-${generateRandomAlphanumeric(4)}`;
-    const identity = `identity-${generateRandomAlphanumeric(4)}`
+    const roomName = `room-${generateRandomAlphanumeric(
+      4
+    )}-${generateRandomAlphanumeric(4)}`;
+    const identity = `identity-${generateRandomAlphanumeric(4)}`;
 
     const grant: VideoGrant = {
       room: roomName,

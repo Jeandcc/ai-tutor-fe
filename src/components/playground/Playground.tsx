@@ -1,5 +1,7 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import { LoadingSVG } from "@/components/button/LoadingSVG";
 import { ChatMessageType } from "@/components/chat/ChatTile";
 import { ColorPicker } from "@/components/colorPicker/ColorPicker";
@@ -42,6 +44,13 @@ export interface PlaygroundProps {
 
 const headerHeight = 56;
 
+const ExcalidrawWrapper = dynamic(
+  async () => (await import("@/components/ExcalidrawWrapper")).default,
+  {
+    ssr: false,
+  }
+);
+
 export default function Playground({
   logo,
   themeColors,
@@ -49,7 +58,10 @@ export default function Playground({
 }: PlaygroundProps) {
   const { config, setUserSettings } = useConfig();
   const { name } = useRoomInfo();
+
   const [transcripts, setTranscripts] = useState<ChatMessageType[]>([]);
+  const [showScreenSharePrompt, setShowScreenSharePrompt] = useState(false);
+
   const { localParticipant } = useLocalParticipant();
 
   const voiceAssistant = useVoiceAssistant();
@@ -198,7 +210,7 @@ export default function Playground({
     return visualizerContent;
   }, [
     voiceAssistant.audioTrack,
-    config.settings.theme_color,
+    // config.settings.theme_color,
     roomState,
     voiceAssistant.state,
   ]);
@@ -221,6 +233,18 @@ export default function Playground({
         {config.description && (
           <ConfigurationPanelItem title="Description">
             {config.description}
+          </ConfigurationPanelItem>
+        )}
+
+        {config.settings.outputs.audio && (
+          <ConfigurationPanelItem title="AI Tutor Audio">
+            {audioTileContent}
+          </ConfigurationPanelItem>
+        )}
+
+        {config.settings.outputs.video && (
+          <ConfigurationPanelItem title="AI Tutor Video">
+            {videoTileContent}
           </ConfigurationPanelItem>
         )}
 
@@ -348,6 +372,9 @@ export default function Playground({
     themeColors,
     setUserSettings,
     voiceAssistant.agent,
+    videoTileContent,
+    audioTileContent,
+    screenTrack,
   ]);
 
   let mobileTabs: PlaygroundTab[] = [];
@@ -413,6 +440,27 @@ export default function Playground({
           onConnect(roomState === ConnectionState.Disconnected)
         }
       />
+
+      {showScreenSharePrompt && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-75 z-10">
+          <div className="bg-white p-4 rounded-lg shadow-lg text-center">
+            <p className="mb-4">
+              In order to use the dashboard, please share this window so the AI
+              Tutor can see it.
+            </p>
+            <button
+              className="bg-blue-600 text-white px-4 py-2 rounded"
+              onClick={async () => {
+                setShowScreenSharePrompt(false);
+                await localParticipant.setScreenShareEnabled(true);
+              }}
+            >
+              Share Screen
+            </button>
+          </div>
+        </div>
+      )}
+
       <div
         className={`flex gap-4 py-4 grow w-full selection:bg-${config.settings.theme_color}-900`}
         style={{ height: `calc(100% - ${headerHeight}px)` }}
@@ -424,32 +472,24 @@ export default function Playground({
             initialTab={mobileTabs.length - 1}
           />
         </div>
-        <div
-          className={`flex-col grow basis-1/6 gap-4 h-full hidden lg:${
-            !config.settings.outputs.audio && !config.settings.outputs.video
-              ? "hidden"
-              : "flex"
-          }`}
-        >
-          {config.settings.outputs.video && (
-            <PlaygroundTile
-              title="Video"
-              className="w-full h-full grow"
-              childrenClassName="justify-center"
+
+        {config.settings.whiteboard && (
+          <PlaygroundTile
+            title="Whiteboard"
+            className="h-full grow basis-2/4 flex"
+          >
+            <div
+              onClick={() =>
+                !screenTrack &&
+                roomState === ConnectionState.Connected &&
+                setShowScreenSharePrompt(true)
+              }
+              className="w-full h-full"
             >
-              {videoTileContent}
-            </PlaygroundTile>
-          )}
-          {config.settings.outputs.audio && (
-            <PlaygroundTile
-              title="Audio"
-              className="w-full h-full grow"
-              childrenClassName="justify-center"
-            >
-              {audioTileContent}
-            </PlaygroundTile>
-          )}
-        </div>
+              <ExcalidrawWrapper />
+            </div>
+          </PlaygroundTile>
+        )}
 
         {config.settings.chat && (
           <PlaygroundTile
@@ -459,6 +499,7 @@ export default function Playground({
             {chatTileContent}
           </PlaygroundTile>
         )}
+
         <PlaygroundTile
           padding={false}
           backgroundColor="gray-950"

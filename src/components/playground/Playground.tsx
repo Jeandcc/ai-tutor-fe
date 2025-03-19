@@ -91,15 +91,18 @@ export default function Playground({
   const localTracks = tracks.filter(
     ({ participant }) => participant instanceof LocalParticipant
   );
-  const localVideoTrack = localTracks.find(
+  const localCameraTrack = localTracks.find(
     ({ source }) => source === Track.Source.Camera
   );
-  const screenTrack = localTracks.find(
+  const localScreenShareTrack = localTracks.find(
     ({ source }) => source === Track.Source.ScreenShare
   );
   const localMicTrack = localTracks.find(
     ({ source }) => source === Track.Source.Microphone
   );
+  // const localCanvasTrack = localTracks.find(
+  //   ({ publication }) => publication.trackName === "excalidraw"
+  // );
 
   const onDataReceived = useCallback(
     (msg: any) => {
@@ -307,7 +310,7 @@ export default function Playground({
               <div className="relative">
                 <VideoTrack
                   className="rounded-sm border border-gray-800 opacity-70 w-full"
-                  trackRef={localVideoTrack}
+                  trackRef={localCameraTrack}
                 />
               </div>
             )}
@@ -320,11 +323,11 @@ export default function Playground({
             deviceSelectorKind="videoinput"
             isScreenShare
           >
-            {screenTrack && (
+            {localScreenShareTrack && (
               <div className="relative">
                 <VideoTrack
                   className="rounded-sm border border-gray-800 opacity-70 w-full"
-                  trackRef={screenTrack}
+                  trackRef={localScreenShareTrack}
                 />
               </div>
             )}
@@ -386,14 +389,14 @@ export default function Playground({
     // localParticipant,
     // name,
     roomState,
-    localVideoTrack,
+    localCameraTrack,
     localMicTrack,
     // themeColors,
     // setUserSettings,
     voiceAssistant.agent,
     aiTutorVideoTile,
     audioTileContent,
-    screenTrack,
+    localScreenShareTrack,
     userCameraTrackIsEnabled,
   ]);
 
@@ -500,7 +503,8 @@ export default function Playground({
           >
             <div
               onClick={() =>
-                !screenTrack &&
+                false &&
+                !localScreenShareTrack &&
                 roomState === ConnectionState.Connected &&
                 setShowScreenSharePrompt(true)
               }

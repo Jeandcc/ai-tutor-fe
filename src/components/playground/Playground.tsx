@@ -269,11 +269,11 @@ export default function Playground({
               name="AI Tutor Connection"
               value={
                 voiceAssistant.agent ? (
-                  "TRUE"
+                  voiceAssistant.agent.connectionQuality.toUpperCase()
                 ) : roomState === ConnectionState.Connected ? (
                   <LoadingSVG diameter={12} strokeWidth={2} />
                 ) : (
-                  "FALSE"
+                  roomState.toUpperCase()
                 )
               }
               valueColor={

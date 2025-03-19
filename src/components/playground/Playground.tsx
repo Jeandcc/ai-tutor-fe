@@ -503,7 +503,6 @@ export default function Playground({
           >
             <div
               onClick={() =>
-                false &&
                 !localScreenShareTrack &&
                 roomState === ConnectionState.Connected &&
                 setShowScreenSharePrompt(true)

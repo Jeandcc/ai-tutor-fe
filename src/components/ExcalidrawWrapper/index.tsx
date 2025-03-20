@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { Excalidraw } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
+import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 
 import {
   useLocalParticipant,
@@ -10,8 +11,11 @@ import {
 import { ConnectionState, Track } from "livekit-client";
 
 const ExcalidrawWrapper: React.FC = () => {
+  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
+
   const excalidrawContainerRef = useRef<HTMLDivElement>(null);
   const publishingCanvasRef = useRef<HTMLCanvasElement>(null);
+  const shouldUpdatePublishingCanvasRef = useRef(false);
 
   const publishingMediaStreamTrackRef = useRef<MediaStreamTrack | null>(null);
 
@@ -20,33 +24,40 @@ const ExcalidrawWrapper: React.FC = () => {
 
   const canvasUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const updatePublishingCanvas = async () => {
-    if (!excalidrawContainerRef.current || !publishingCanvasRef.current) return;
-
-    // Copies the current Excalidraw canvas to the hidden canvas.
-    const ctx = publishingCanvasRef.current.getContext("2d");
-    if (ctx) {
-      ctx.clearRect(
-        0,
-        0,
-        publishingCanvasRef.current.width,
-        publishingCanvasRef.current.height
-      );
-      ctx.drawImage(
-        excalidrawContainerRef.current.querySelector(
-          "canvas"
-        ) as HTMLCanvasElement,
-        0,
-        0,
-        publishingCanvasRef.current.width,
-        publishingCanvasRef.current.height
-      );
-    }
-  };
-
   // Effect to handle publishing the canvas track when connected,
   // and cleaning up when disconnected or unmounted.
   useEffect(() => {
+    const updatePublishingCanvas = async () => {
+      if (
+        !excalidrawContainerRef.current ||
+        !publishingCanvasRef.current ||
+        !shouldUpdatePublishingCanvasRef.current
+      )
+        return;
+
+      // Copies the current Excalidraw canvas to the hidden canvas.
+      const ctx = publishingCanvasRef.current.getContext("2d");
+      if (ctx) {
+        ctx.clearRect(
+          0,
+          0,
+          publishingCanvasRef.current.width,
+          publishingCanvasRef.current.height
+        );
+        ctx.drawImage(
+          excalidrawContainerRef.current.querySelector(
+            "canvas"
+          ) as HTMLCanvasElement,
+          0,
+          0,
+          publishingCanvasRef.current.width,
+          publishingCanvasRef.current.height
+        );
+
+        shouldUpdatePublishingCanvasRef.current = false;
+      }
+    };
+
     const setupMediaStreamIfNotAlreadyUp = () => {
       // If connected, set up the hidden canvas dimensions.
       if (
@@ -113,13 +124,21 @@ const ExcalidrawWrapper: React.FC = () => {
     };
   }, [roomState, localParticipant]);
 
+  useEffect(() => {
+    if (excalidrawAPI) {
+      excalidrawAPI.onPointerUp(() => {
+        shouldUpdatePublishingCanvasRef.current = true;
+      });
+    }
+  }, [excalidrawAPI]);
+
   return (
     <div style={{ height: "100%", width: "100%" }}>
       <div
         ref={excalidrawContainerRef}
         style={{ height: "100%", width: "100%" }}
       >
-        <Excalidraw />
+        <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)} />
       </div>
 
       {/* Hidden canvas used to publish the video track */}

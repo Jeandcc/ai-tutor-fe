@@ -16,6 +16,7 @@ const ExcalidrawWrapper: React.FC = () => {
   const excalidrawContainerRef = useRef<HTMLDivElement>(null);
   const publishingCanvasRef = useRef<HTMLCanvasElement>(null);
   const shouldUpdatePublishingCanvasRef = useRef(false);
+  const prevCanvasStateRef = useRef<string>("");
 
   const publishingMediaStreamTrackRef = useRef<MediaStreamTrack | null>(null);
 
@@ -126,8 +127,16 @@ const ExcalidrawWrapper: React.FC = () => {
 
   useEffect(() => {
     if (excalidrawAPI) {
-      excalidrawAPI.onPointerUp(() => {
-        shouldUpdatePublishingCanvasRef.current = true;
+      excalidrawAPI.onChange((_, state) => {
+        const newStateJson = JSON.stringify(state);
+        const prevStateJson = prevCanvasStateRef.current;
+
+        if (newStateJson === prevStateJson) {
+          return;
+        } else {
+          prevCanvasStateRef.current = newStateJson;
+          shouldUpdatePublishingCanvasRef.current = true;
+        }
       });
     }
   }, [excalidrawAPI]);

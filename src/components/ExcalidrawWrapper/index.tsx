@@ -1,9 +1,7 @@
-"use client";
-
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { Excalidraw } from "@excalidraw/excalidraw";
-import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
+import "@excalidraw/excalidraw/index.css";
 
 import {
   useLocalParticipant,
@@ -11,64 +9,121 @@ import {
 } from "@livekit/components-react";
 import { ConnectionState, Track } from "livekit-client";
 
-import "@excalidraw/excalidraw/index.css";
-
 const ExcalidrawWrapper: React.FC = () => {
-  // Ref for the Excalidraw container.
-  const containerRef = useRef<HTMLDivElement>(null);
+  const excalidrawContainerRef = useRef<HTMLDivElement>(null);
+  const publishingCanvasRef = useRef<HTMLCanvasElement>(null);
 
-  // LiveKit hooks.
+  const publishingMediaStreamTrackRef = useRef<MediaStreamTrack | null>(null);
+
   const { localParticipant } = useLocalParticipant();
   const roomState = useConnectionState();
 
-  // State to store the Excalidraw API and published video track.
-  const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
+  const canvasUpdateIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [publishedTrack, setPublishedTrack] = useState<MediaStreamTrack | null>(
-    null
-  );
+  const updatePublishingCanvas = async () => {
+    if (!excalidrawContainerRef.current || !publishingCanvasRef.current) return;
 
-  // Effect for publishing/unpublishing the canvas video track based on room connection.
+    // Copies the current Excalidraw canvas to the hidden canvas.
+    const ctx = publishingCanvasRef.current.getContext("2d");
+    if (ctx) {
+      ctx.clearRect(
+        0,
+        0,
+        publishingCanvasRef.current.width,
+        publishingCanvasRef.current.height
+      );
+      ctx.drawImage(
+        excalidrawContainerRef.current.querySelector(
+          "canvas"
+        ) as HTMLCanvasElement,
+        0,
+        0,
+        publishingCanvasRef.current.width,
+        publishingCanvasRef.current.height
+      );
+    }
+  };
+
+  // Effect to handle publishing the canvas track when connected,
+  // and cleaning up when disconnected or unmounted.
   useEffect(() => {
-    if (roomState !== ConnectionState.Connected) {
-      // If not connected, unpublish and clean up.
-      if (publishedTrack) {
-        localParticipant.unpublishTrack(publishedTrack);
-        publishedTrack.stop();
-        setPublishedTrack(null);
-      }
+    const setupMediaStreamIfNotAlreadyUp = () => {
+      // If connected, set up the hidden canvas dimensions.
+      if (
+        publishingCanvasRef.current &&
+        !publishingMediaStreamTrackRef.current
+      ) {
+        // Capture the canvas stream (30 fps is used here; adjust if needed)
+        const stream = publishingCanvasRef.current.captureStream(30);
+        const track = stream.getVideoTracks()[0];
 
+        // Publish the captured video track with a custom name.
+        localParticipant.publishTrack(track, {
+          name: "excalidraw",
+          source: Track.Source.Unknown,
+        });
+
+        publishingMediaStreamTrackRef.current = track;
+      }
+    };
+
+    const clearMediaStream = () => {
+      if (publishingMediaStreamTrackRef.current) {
+        localParticipant.unpublishTrack(publishingMediaStreamTrackRef.current);
+        publishingMediaStreamTrackRef.current.stop();
+        publishingMediaStreamTrackRef.current = null;
+      }
+    };
+
+    const setupCanvasUpdateIntervalIfNotAlreadyUp = () => {
+      // Start the interval to update the publishing canvas if the Excalidraw API is available.
+      if (!canvasUpdateIntervalRef.current) {
+        canvasUpdateIntervalRef.current = setInterval(
+          updatePublishingCanvas,
+          1000 / 30
+        );
+      }
+    };
+
+    const clearCanvasUpdateInterval = () => {
+      // Clear the interval if it exists.
+      if (canvasUpdateIntervalRef.current) {
+        clearInterval(canvasUpdateIntervalRef.current);
+        canvasUpdateIntervalRef.current = null;
+      }
+    };
+
+    const cleanup = () => {
+      clearMediaStream();
+      clearCanvasUpdateInterval();
+    };
+
+    // When the room is not connected, cleanup any published track and clear the update interval.
+    if (roomState !== ConnectionState.Connected) {
+      cleanup();
       return;
     }
 
-    // If connected and we don't have a published track yet, initialize it.
-    if (containerRef.current && !publishedTrack) {
-      const excalidrawCanvas = containerRef.current.querySelector("canvas");
-      if (!excalidrawCanvas) return;
+    setupMediaStreamIfNotAlreadyUp();
+    setupCanvasUpdateIntervalIfNotAlreadyUp();
 
-      const stream = excalidrawCanvas.captureStream(30);
-      const track = stream.getVideoTracks()[0];
-      localParticipant.publishTrack(track, {
-        name: "excalidraw",
-        source: Track.Source.Unknown,
-      });
-      setPublishedTrack(track);
-    }
-
+    // Cleanup function: clear the interval and unpublish the track.
     return () => {
-      if (publishedTrack) {
-        localParticipant.unpublishTrack(publishedTrack);
-        publishedTrack.stop();
-        setPublishedTrack(null);
-      }
+      cleanup();
     };
-  }, [roomState, excalidrawAPI, localParticipant, publishedTrack]);
+  }, [roomState, localParticipant]);
 
   return (
     <div style={{ height: "100%", width: "100%" }}>
-      <div ref={containerRef} style={{ height: "100%", width: "100%" }}>
-        <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)} />
+      <div
+        ref={excalidrawContainerRef}
+        style={{ height: "100%", width: "100%" }}
+      >
+        <Excalidraw />
       </div>
+
+      {/* Hidden canvas used to publish the video track */}
+      <canvas ref={publishingCanvasRef} style={{ display: "none" }} />
     </div>
   );
 };

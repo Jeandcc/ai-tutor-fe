@@ -100,9 +100,9 @@ export default function Playground({
   const localMicTrack = localTracks.find(
     ({ source }) => source === Track.Source.Microphone
   );
-  // const localCanvasTrack = localTracks.find(
-  //   ({ publication }) => publication.trackName === "excalidraw"
-  // );
+  const localExcalidrawTrack = localTracks.find(
+    ({ publication }) => publication.trackName === "excalidraw"
+  );
 
   const onDataReceived = useCallback(
     (msg: any) => {
@@ -298,6 +298,19 @@ export default function Playground({
           config.settings.outputs.video && (
             <ConfigurationPanelItem title="AI Tutor Video">
               {aiTutorVideoTile}
+            </ConfigurationPanelItem>
+          )}
+
+        {roomState === ConnectionState.Connected &&
+          // voiceAssistant.agent &&
+          config.settings.whiteboard && (
+            <ConfigurationPanelItem title="What the AI sees">
+              {!!localExcalidrawTrack && (
+                <VideoTrack
+                  className="rounded-sm border border-gray-800 opacity-70 w-full"
+                  trackRef={localExcalidrawTrack}
+                />
+              )}
             </ConfigurationPanelItem>
           )}
 
@@ -503,6 +516,7 @@ export default function Playground({
           >
             <div
               onClick={() =>
+                false &&
                 !localScreenShareTrack &&
                 roomState === ConnectionState.Connected &&
                 setShowScreenSharePrompt(true)

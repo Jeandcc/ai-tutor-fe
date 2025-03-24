@@ -10,12 +10,16 @@ import {
   MonitorOff,
   ChevronUp,
   ChevronDown,
+  PowerOff,
 } from "lucide-react";
-import { Track } from "livekit-client";
+import { ConnectionState, Track } from "livekit-client";
 import {
   useMediaDeviceSelect,
   useTrackToggle,
+  useConnectionState,
 } from "@livekit/components-react";
+
+import { LoadingSVG } from "@/components/button/LoadingSVG";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -36,6 +40,33 @@ export function MediaControlBar({
   onConnect,
 }: MediaControlBarProps) {
   const [expanded, setExpanded] = useState(true);
+
+  const [isConnecting, setIsConnecting] = useState(false);
+  const connectionState = useConnectionState();
+
+  // Handle connection state changes
+  useEffect(() => {
+    if (connectionState === ConnectionState.Connecting) {
+      setIsConnecting(true);
+    } else {
+      setIsConnecting(false);
+    }
+  }, [connectionState]);
+
+  // Handle connect button click
+  const handleConnect = () => {
+    if (!connected) {
+      setIsConnecting(true);
+      onConnect(true);
+    }
+  };
+
+  // Handle disconnect button click
+  const handleDisconnect = () => {
+    if (connected) {
+      onConnect(false);
+    }
+  };
 
   const micDeviceSelector = useMediaDeviceSelect({ kind: "audioinput" });
   const [selectedMicDeviceId, setSelectedMicDeviceId] = useState<string>("");
@@ -100,10 +131,18 @@ export function MediaControlBar({
             <div className="flex justify-center">
               <Button
                 variant={"default"}
-                onClick={() => onConnect(!connected)}
-                className="bg-primary hover:bg-primary/90 text-white px-8 py-2"
+                onClick={handleConnect}
+                disabled={isConnecting}
+                className="bg-primary hover:bg-primary/90 text-white px-8 py-2 min-w-[120px] flex items-center justify-center gap-2"
               >
-                Connect
+                {isConnecting ? (
+                  <>
+                    <LoadingSVG diameter={16} strokeWidth={2} />
+                    <span>Connecting...</span>
+                  </>
+                ) : (
+                  "Connect"
+                )}
               </Button>
             </div>
           ) : (
@@ -223,6 +262,19 @@ export function MediaControlBar({
                     {screenShareEnabled ? `Sharing screen` : "Screen Share Off"}
                   </span>
                 </div>
+              </div>
+
+              {/* Disconnect Button */}
+              <div className="flex items-center gap-3 ml-4">
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={handleDisconnect}
+                  className="rounded-md px-4 flex items-center gap-2"
+                >
+                  <PowerOff size={16} />
+                  <span>Disconnect</span>
+                </Button>
               </div>
             </div>
           )}

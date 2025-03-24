@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 
-import { Excalidraw } from "@excalidraw/excalidraw";
+import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
 import { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 
@@ -147,7 +147,9 @@ const ExcalidrawWrapper: React.FC = () => {
         ref={excalidrawContainerRef}
         style={{ height: "100%", width: "100%" }}
       >
-        <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)} />
+        <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)}>
+          <WelcomeScreen />
+        </Excalidraw>
       </div>
 
       {/* Hidden canvas used to publish the video track */}

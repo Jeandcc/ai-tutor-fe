@@ -9,7 +9,7 @@ import Head from "next/head";
 import { useCallback, useState } from "react";
 
 import { PlaygroundConnect } from "@/components/PlaygroundConnect";
-import Playground from "@/components/playground/Playground";
+import Playground from "@/components/playground/Playground2";
 import { PlaygroundToast, ToastType } from "@/components/toast/PlaygroundToast";
 import { ConfigProvider, useConfig } from "@/hooks/useConfig";
 import { ConnectionMode, ConnectionProvider, useConnection } from "@/hooks/useConnection";
@@ -84,7 +84,7 @@ export function HomeInner() {
         <meta property="og:image:height" content="630" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="relative flex flex-col justify-center px-4 items-center h-full w-full bg-black repeating-square-background">
+      <main className="relative flex flex-col justify-center items-center h-full w-full bg-black repeating-square-background">
         <AnimatePresence>
           {toastMessage && (
             <motion.div

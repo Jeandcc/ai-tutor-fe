@@ -11,6 +11,7 @@ import { ConnectionState } from "livekit-client";
 import { PlaygroundProps } from "./Playground";
 import { MediaControlBar } from "./MediaControlBar";
 import { MediaSidebar } from "./MediaSidebar";
+import { ChatSidebar } from "./ChatSidebar";
 
 const ExcalidrawWrapper = dynamic(
   async () => (await import("@/components/ExcalidrawWrapper")).default,
@@ -45,6 +46,8 @@ const Playground: React.FC<PlaygroundProps> = ({
       <MediaControlBar connected={connected} onConnect={onConnect} />
 
       <MediaSidebar connected={connected} />
+
+      <ChatSidebar connected={connected} />
     </div>
   );
 };

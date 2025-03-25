@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import { ShieldQuestion } from "lucide-react";
 
 import { Excalidraw, WelcomeScreen } from "@excalidraw/excalidraw";
 import "@excalidraw/excalidraw/index.css";
@@ -9,6 +10,8 @@ import {
   useConnectionState,
 } from "@livekit/components-react";
 import { ConnectionState, Track } from "livekit-client";
+import Image from "next/image";
+import { useRouter } from "next/router";
 
 const ExcalidrawWrapper: React.FC = () => {
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
@@ -125,6 +128,14 @@ const ExcalidrawWrapper: React.FC = () => {
     };
   }, [roomState, localParticipant]);
 
+  const { query } = useRouter();
+  const tutorName =
+    query.tutor === "ondre"
+      ? "Ondre"
+      : query.tutor === "ryan"
+      ? "Ryan"
+      : "Learner";
+
   useEffect(() => {
     if (excalidrawAPI) {
       excalidrawAPI.onChange((_, state) => {
@@ -148,7 +159,32 @@ const ExcalidrawWrapper: React.FC = () => {
         style={{ height: "100%", width: "100%" }}
       >
         <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)}>
-          <WelcomeScreen />
+          <WelcomeScreen>
+            <WelcomeScreen.Center>
+              <WelcomeScreen.Center.Logo>
+                <Image
+                  src="https://cdn.prod.website-files.com/600f0ea5652fe47991474630/602428438327a78cb4e7fcb3_learnerlogo.svg"
+                  alt="Learner Logo"
+                  width={200}
+                  height={200}
+                />
+              </WelcomeScreen.Center.Logo>
+              <WelcomeScreen.Center.Heading>
+                AI Tutor - {tutorName}
+              </WelcomeScreen.Center.Heading>
+
+              <WelcomeScreen.Center.Menu>
+                <WelcomeScreen.Center.MenuItemLink
+                  icon={<ShieldQuestion size={20} />}
+                  href="https://www.notion.so/Guide-page-1c10b86d6e8e80ef99e9f853aced27e3?pvs=4"
+                >
+                  How to use the tool
+                </WelcomeScreen.Center.MenuItemLink>
+
+                <WelcomeScreen.Center.MenuItemHelp />
+              </WelcomeScreen.Center.Menu>
+            </WelcomeScreen.Center>
+          </WelcomeScreen>
         </Excalidraw>
       </div>
 

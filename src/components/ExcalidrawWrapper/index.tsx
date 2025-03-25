@@ -12,6 +12,7 @@ import {
 import { ConnectionState, Track } from "livekit-client";
 import Image from "next/image";
 import { useRouter } from "next/router";
+import { useConfig } from "@/hooks/useConfig";
 
 const ExcalidrawWrapper: React.FC = () => {
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
@@ -152,6 +153,8 @@ const ExcalidrawWrapper: React.FC = () => {
     }
   }, [excalidrawAPI]);
 
+  const { config } = useConfig();
+
   return (
     <div style={{ height: "100%", width: "100%" }}>
       <div
@@ -169,9 +172,16 @@ const ExcalidrawWrapper: React.FC = () => {
                   height={200}
                 />
               </WelcomeScreen.Center.Logo>
-              <WelcomeScreen.Center.Heading>
-                AI Tutor - {tutorName}
-              </WelcomeScreen.Center.Heading>
+
+              <div className="flex flex-col max-w-xl gap-3">
+                <WelcomeScreen.Center.Heading>
+                  {config.title}
+                </WelcomeScreen.Center.Heading>
+
+                <WelcomeScreen.Center.Heading>
+                  {config.description}
+                </WelcomeScreen.Center.Heading>
+              </div>
 
               <WelcomeScreen.Center.Menu>
                 <WelcomeScreen.Center.MenuItemLink

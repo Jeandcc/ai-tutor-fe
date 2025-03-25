@@ -165,7 +165,7 @@ export function MediaControlBar({
                     <CameraOff size={20} />
                   )}
                 </Button>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-1">
                   <span className="text-sm font-medium">
                     {cameraEnabled ? "Camera On" : "Camera Off"}
                   </span>
@@ -206,7 +206,7 @@ export function MediaControlBar({
                 >
                   {micEnabled ? <Mic size={20} /> : <MicOff size={20} />}
                 </Button>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-1">
                   <span className="text-sm font-medium">
                     {micEnabled ? "Mic On" : "Mic Off"}
                   </span>
@@ -257,7 +257,7 @@ export function MediaControlBar({
                     <MonitorOff size={20} />
                   )}
                 </Button>
-                <div className="flex flex-col">
+                <div className="flex flex-col gap-1">
                   <span className="text-sm font-medium">
                     {screenShareEnabled ? `Sharing screen` : "Screen Share Off"}
                   </span>

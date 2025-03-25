@@ -80,7 +80,7 @@ const safelist = [
 ];
 
 module.exports = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: ["./src/**/*.{js,ts,jsx,tsx,mdx}"],
   theme: {
     colors: {

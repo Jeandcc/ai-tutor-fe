@@ -135,7 +135,7 @@ const ExcalidrawWrapper: React.FC = () => {
       ? "Ondre"
       : query.tutor === "ryan"
       ? "Ryan"
-      : "Learner";
+      : "Ondre";
 
   useEffect(() => {
     if (excalidrawAPI) {
@@ -175,7 +175,7 @@ const ExcalidrawWrapper: React.FC = () => {
 
               <div className="flex flex-col max-w-xl gap-3">
                 <WelcomeScreen.Center.Heading>
-                  {config.title}
+                  AI Tutor - {tutorName}
                 </WelcomeScreen.Center.Heading>
 
                 <WelcomeScreen.Center.Heading>

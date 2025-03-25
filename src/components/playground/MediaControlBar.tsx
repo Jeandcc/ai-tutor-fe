@@ -254,10 +254,7 @@ const MediaDeviceControl: React.FC<MediaDeviceControlProps> = ({
 // Main Media Control Bar Component
 interface MediaControlBarProps {
   connected: boolean;
-  onConnect: (
-    connect: boolean,
-    opts?: { token?: string; url?: string }
-  ) => void;
+  onConnect: (connect: boolean, opts?: { token: string; url: string }) => void;
 }
 
 export function MediaControlBar({

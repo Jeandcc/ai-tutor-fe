@@ -184,6 +184,10 @@ const ExcalidrawWrapper: React.FC = () => {
                 <WelcomeScreen.Center.MenuItemHelp />
               </WelcomeScreen.Center.Menu>
             </WelcomeScreen.Center>
+
+            <WelcomeScreen.Hints.MenuHint />
+            <WelcomeScreen.Hints.ToolbarHint />
+            <WelcomeScreen.Hints.HelpHint />
           </WelcomeScreen>
         </Excalidraw>
       </div>

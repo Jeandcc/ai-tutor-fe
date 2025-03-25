@@ -121,7 +121,7 @@ export function MediaSidebar({ connected }: MediaSidebarProps) {
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-1 text-white text-xs font-medium">
                 <Mic size={14} />
-                <span>Tutor Audio</span>
+                <span>AI Tutor Audio</span>
               </div>
             </div>
             <div className="bg-gray-800 rounded-md p-2 h-20 flex items-center justify-center overflow-hidden">
@@ -142,7 +142,7 @@ export function MediaSidebar({ connected }: MediaSidebarProps) {
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-1 text-white text-xs font-medium">
                 <Mic size={14} />
-                <span>Input Audio</span>
+                <span>Mic Audio</span>
               </div>
             </div>
 
@@ -197,7 +197,7 @@ export function MediaSidebar({ connected }: MediaSidebarProps) {
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-1 text-white text-xs font-medium">
                 <Camera size={14} />
-                <span>Whiteboard</span>
+                <span>What the AI Sees</span>
               </div>
             </div>
             <div className="bg-gray-800 rounded-md overflow-hidden aspect-video">

@@ -184,12 +184,12 @@ const ExcalidrawWrapper: React.FC = () => {
               </div>
 
               <WelcomeScreen.Center.Menu>
-                <WelcomeScreen.Center.MenuItemLink
+                {/* <WelcomeScreen.Center.MenuItemLink
                   icon={<ShieldQuestion size={20} />}
                   href="https://www.notion.so/Guide-page-1c10b86d6e8e80ef99e9f853aced27e3?pvs=4"
                 >
                   How to use the tool
-                </WelcomeScreen.Center.MenuItemLink>
+                </WelcomeScreen.Center.MenuItemLink> */}
 
                 <WelcomeScreen.Center.MenuItemHelp />
               </WelcomeScreen.Center.Menu>

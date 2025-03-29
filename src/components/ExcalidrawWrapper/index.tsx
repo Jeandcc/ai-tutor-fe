@@ -131,11 +131,7 @@ const ExcalidrawWrapper: React.FC = () => {
 
   const { query } = useRouter();
   const tutorName =
-    query.tutor === "ondre"
-      ? "Ondre"
-      : query.tutor === "ryan"
-      ? "Ryan"
-      : "Ondre";
+    query.tutor === "ondre" ? "Ondre" : query.tutor === "ryan" ? "Ryan" : "";
 
   useEffect(() => {
     if (excalidrawAPI) {
@@ -175,7 +171,7 @@ const ExcalidrawWrapper: React.FC = () => {
 
               <div className="flex flex-col max-w-xl gap-3">
                 <WelcomeScreen.Center.Heading>
-                  AI Tutor - {tutorName}
+                  AI Tutor{tutorName ? ` - ${tutorName}` : ""}
                 </WelcomeScreen.Center.Heading>
 
                 <WelcomeScreen.Center.Heading>

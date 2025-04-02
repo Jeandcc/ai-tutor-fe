@@ -134,20 +134,51 @@ const ExcalidrawWrapper: React.FC = () => {
     query.tutor === "ondre" ? "Ondre" : query.tutor === "ryan" ? "Ryan" : "";
 
   useEffect(() => {
-    if (excalidrawAPI) {
-      excalidrawAPI.onChange((_, state) => {
+    if (
+      excalidrawAPI &&
+      localParticipant &&
+      roomState === ConnectionState.Connected
+    ) {
+      const unsubscribeFromChanges = excalidrawAPI.onChange((_, state) => {
         const newStateJson = JSON.stringify(state);
         const prevStateJson = prevCanvasStateRef.current;
+
+        const newStateObj = state;
+        const prevStateObj = JSON.parse(prevStateJson || "{}");
 
         if (newStateJson === prevStateJson) {
           return;
         } else {
+          // const differentProps = findWhatObjPropsOfObjectsAreDifferent(
+          //   prevStateObj,
+          //   newStateObj
+          // );
+
+          const PROPERTIES_TO_TRIGGER_INTERRUPTS = [
+            "editingTextElement" as const,
+            "newElement" as const,
+          ];
+
+          const shouldTriggerInterrupt = PROPERTIES_TO_TRIGGER_INTERRUPTS.some(
+            (property) => {
+              return newStateObj[property] !== prevStateObj[property];
+            }
+          );
+
+          if (shouldTriggerInterrupt) {
+            localParticipant.sendText("interrupt", {
+              topic: "excalidraw",
+            });
+          }
+
           prevCanvasStateRef.current = newStateJson;
           shouldUpdatePublishingCanvasRef.current = true;
         }
       });
+
+      return unsubscribeFromChanges;
     }
-  }, [excalidrawAPI]);
+  }, [excalidrawAPI, localParticipant, roomState]);
 
   const { config } = useConfig();
 

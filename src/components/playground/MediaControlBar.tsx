@@ -141,7 +141,9 @@ const ConnectionControl: React.FC<ConnectionControlProps> = ({
         enabled={cameraEnabled}
         devices={cameraDevices}
         selectedDeviceId={selectedCameraDeviceId}
-        onToggle={toggleCamera}
+        onToggle={() => {
+          toggleCamera();
+        }}
         onDeviceChange={handleCameraChange}
       />
 
@@ -150,7 +152,9 @@ const ConnectionControl: React.FC<ConnectionControlProps> = ({
         enabled={micEnabled}
         devices={microphoneDevices}
         selectedDeviceId={selectedMicDeviceId}
-        onToggle={toggleMic}
+        onToggle={() => {
+          toggleMic();
+        }}
         onDeviceChange={handleMicrophoneChange}
       />
 
@@ -158,7 +162,7 @@ const ConnectionControl: React.FC<ConnectionControlProps> = ({
         <Button
           variant={screenShareEnabled ? "outline" : "ghost"}
           size="icon"
-          onClick={() => toggleScreenShare}
+          onClick={() => toggleScreenShare()}
           className={`rounded-full ${
             screenShareEnabled ? "text-black" : "text-gray-400 bg-gray-800/50"
           }`}
@@ -219,6 +223,7 @@ const MediaDeviceControl: React.FC<MediaDeviceControlProps> = ({
       >
         <Icon size={20} />
       </Button>
+
       <div className="flex flex-col gap-1">
         <span className="text-sm font-medium">
           {enabled

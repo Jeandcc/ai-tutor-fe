@@ -1,0 +1,30 @@
+.wrapper {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 16px 24px;
+}
+
+.left {
+}
+
+.logo {
+  max-width: 120px;
+}
+
+.right {
+  margin-left: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.user-profile-page-title {
+  margin: 0px 0px 1rem;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  line-height: 1.41176;
+}

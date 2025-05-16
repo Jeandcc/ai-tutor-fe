@@ -33,22 +33,11 @@ export function ChatSidebar({ connected }: ChatSidebarProps) {
   }
 
   return (
-    <div
-      className={`fixed top-20 left-0 bottom-20 flex transition-all duration-300 z-40`}
-    >
-      {/* Toggle button */}
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="self-center -mr-4 bg-gray-900 text-white p-1 rounded-r-md shadow-lg z-10 order-last"
-        aria-label={expanded ? "Collapse chat" : "Expand chat"}
-      >
-        {expanded ? <ChevronLeft size={20} /> : <ChevronRight size={20} />}
-      </button>
-
+    <div className={`flex transition-all duration-300 z-40`}>
       {/* Sidebar content */}
       <div
         className={`flex flex-col bg-gray-900/90 backdrop-blur-sm rounded-r-md shadow-lg overflow-hidden transition-all duration-300 ${
-          expanded ? "w-60 p-3" : "w-0"
+          expanded ? "w-full p-3" : "w-0"
         }`}
       >
         {

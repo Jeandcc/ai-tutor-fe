@@ -40,14 +40,54 @@ const Playground: React.FC<PlaygroundProps> = ({
   }, [connected, localParticipant]);
 
   return (
-    <div style={{ height: "100%", width: "100%" }}>
-      <ExcalidrawWrapper />
+    <div
+      className="bg-gray-900/90"
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      <div
+        style={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "row",
+        }}
+      >
+        <div
+          style={{
+            width: "20%",
+            minWidth: 240,
+            maxWidth: 500,
+          }}
+        >
+          <ChatSidebar connected={connected} />
+        </div>
 
-      <MediaControlBar connected={connected} onConnect={onConnect} />
+        <div
+          style={{
+            flexGrow: 1,
+          }}
+        >
+          <ExcalidrawWrapper />
+        </div>
 
-      <MediaSidebar connected={connected} />
+        <div
+          style={{
+            width: "20%",
+            minWidth: 240,
+            maxWidth: 500,
+          }}
+        >
+          <MediaSidebar connected={connected} />
+        </div>
+      </div>
 
-      <ChatSidebar connected={connected} />
+      <div>
+        <MediaControlBar connected={connected} onConnect={onConnect} />
+      </div>
     </div>
   );
 };

@@ -98,22 +98,11 @@ export function MediaSidebar({ connected }: MediaSidebarProps) {
   }
 
   return (
-    <div
-      className={`fixed top-20 right-0 bottom-20 flex transition-all duration-300 z-40`}
-    >
-      {/* Toggle button */}
-      <button
-        onClick={() => setExpanded(!expanded)}
-        className="self-center -ml-4 bg-gray-900 text-white p-1 rounded-l-md shadow-lg z-10"
-        aria-label={expanded ? "Collapse sidebar" : "Expand sidebar"}
-      >
-        {expanded ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
-      </button>
-
+    <div className={`flex transition-all duration-300 z-40`}>
       {/* Sidebar content */}
       <div
         className={`flex flex-col gap-3 bg-gray-900/90 backdrop-blur-sm rounded-l-md shadow-lg overflow-hidden transition-all duration-300 ${
-          expanded ? "w-40 p-3" : "w-0"
+          expanded ? "w-full p-3" : "w-0"
         }`}
       >
         {!!voiceAssistant.audioTrack && (

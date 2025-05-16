@@ -291,19 +291,9 @@ export function MediaControlBar({
 
   return (
     <div
-      className={`fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-sm text-white z-50 
-        transition-all duration-300 shadow-lg border-t border-gray-800 
+      className={`text-white z-50 transition-all duration-300 border-t border-gray-800 
         ${expanded ? "h-auto min-h-[5rem]" : "h-0"}`}
     >
-      <div className="flex justify-center">
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="bg-gray-800 px-4 py-1 rounded-t-md -mt-6 flex items-center gap-1 text-sm"
-        >
-          {expanded ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
-        </button>
-      </div>
-
       {expanded && (
         <div className="max-w-7xl mx-auto p-4 w-full">
           <ConnectionControl

@@ -181,7 +181,7 @@ export function MediaSidebar({ connected }: MediaSidebarProps) {
           </div>
         )}
 
-        {!!localCanvasTrack && (
+        {!!localCanvasTrack && false && (
           <div className="relative">
             <div className="flex items-center justify-between mb-1">
               <div className="flex items-center gap-1 text-white text-xs font-medium">

@@ -58,11 +58,13 @@ const Playground: React.FC<PlaygroundProps> = ({
       >
         <div
           style={{
-            width: "20%",
+            width: "30%",
             minWidth: 240,
             maxWidth: 500,
+            overflow: "auto",
           }}
         >
+          <MediaSidebar connected={connected} />
           <ChatSidebar connected={connected} />
         </div>
 
@@ -72,16 +74,6 @@ const Playground: React.FC<PlaygroundProps> = ({
           }}
         >
           <ExcalidrawWrapper />
-        </div>
-
-        <div
-          style={{
-            width: "20%",
-            minWidth: 240,
-            maxWidth: 500,
-          }}
-        >
-          <MediaSidebar connected={connected} />
         </div>
       </div>
 

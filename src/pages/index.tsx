@@ -11,8 +11,12 @@ import { useCallback, useState } from "react";
 import { PlaygroundConnect } from "@/components/PlaygroundConnect";
 import Playground from "@/components/playground/Playground2";
 import { PlaygroundToast, ToastType } from "@/components/toast/PlaygroundToast";
-import { ConfigProvider, useConfig } from "@/hooks/useConfig";
-import { ConnectionMode, ConnectionProvider, useConnection } from "@/hooks/useConnection";
+import { ConfigProvider } from "@/hooks/useConfig";
+import {
+  ConnectionMode,
+  ConnectionProvider,
+  useConnection,
+} from "@/hooks/useConnection";
 import { useMemo } from "react";
 import { ToastProvider, useToast } from "@/components/toast/ToasterProvider";
 
@@ -44,8 +48,7 @@ export default function Home() {
 export function HomeInner() {
   const { shouldConnect, wsUrl, token, mode, connect, disconnect } =
     useConnection();
-  
-  const {config} = useConfig();
+
   const { toastMessage, setToastMessage } = useToast();
 
   const handleConnect = useCallback(
@@ -59,30 +62,38 @@ export function HomeInner() {
     if (process.env.NEXT_PUBLIC_LIVEKIT_URL) {
       return true;
     }
-    if(wsUrl) {
+    if (wsUrl) {
       return true;
     }
     return false;
-  }, [wsUrl])
+  }, [wsUrl]);
+
+  const metadata = {
+    title: "Learner AI Tutor",
+    description: "A personalized AI tutor for learners",
+    keywords: "AI, Tutor, Learner, Education",
+    ogImage: "/images/og-image.png",
+  };
 
   return (
     <>
       <Head>
-        <title>{config.title}</title>
-        <meta name="description" content={config.description} />
+        <title>{metadata.title}</title>
+        <meta property="og:title" content={metadata.title} key="title" />
+        <meta name="description" content={metadata.description} />
+        <meta property="og:description" content={metadata.description} />
+        <meta name="keywords" content={metadata.keywords} />
+        <meta property="og:image" content={metadata.ogImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <link rel="icon" href="/favicon.ico" />
+
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
         />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
-        <meta
-          property="og:image"
-          content="https://livekit.io/images/og/agents-playground.png"
-        />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="relative flex flex-col justify-center items-center h-full w-full bg-black repeating-square-background">
         <AnimatePresence>

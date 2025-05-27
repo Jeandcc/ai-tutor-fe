@@ -39,8 +39,8 @@ export type UserSettings = {
 
 // Fallback if NEXT_PUBLIC_APP_CONFIG is not set
 const defaultConfig: AppConfig = {
-  title: "LiveKit Agents Playground",
-  description: "A playground for testing LiveKit Agents",
+  title: "Learner AI Tutor",
+  description: "A personalized AI tutor for learners",
   video_fit: "cover",
   settings: {
     editable: true,

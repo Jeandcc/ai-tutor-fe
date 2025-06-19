@@ -188,7 +188,10 @@ const ExcalidrawWrapper: React.FC = () => {
         ref={excalidrawContainerRef}
         style={{ height: "100%", width: "100%" }}
       >
-        <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)}>
+        <Excalidraw
+          zenModeEnabled
+          excalidrawAPI={(api) => setExcalidrawAPI(api)}
+        >
           <WelcomeScreen>
             <WelcomeScreen.Center>
               <WelcomeScreen.Center.Logo>

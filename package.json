@@ -10,8 +10,8 @@
   },
   "dependencies": {
     "@excalidraw/excalidraw": "^0.18.0",
-    "@livekit/components-react": "^2.6.0",
-    "@livekit/components-styles": "^1.1.1",
+    "@livekit/components-react": "^2.9.10",
+    "@livekit/components-styles": "^1.1.6",
     "@radix-ui/react-dropdown-menu": "^2.0.6",
     "@radix-ui/react-select": "^2.1.6",
     "@radix-ui/react-slot": "^1.1.2",
@@ -20,7 +20,7 @@
     "cookies-next": "^4.1.1",
     "framer-motion": "^10.16.16",
     "js-yaml": "^4.1.0",
-    "livekit-client": "^2.5.1",
+    "livekit-client": "^2.13.8",
     "livekit-server-sdk": "^2.6.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.483.0",
@@ -28,6 +28,7 @@
     "next-plugin-preval": "^1.2.6",
     "qrcode.react": "^4.0.0",
     "react": "^18",
+    "react-confetti": "^6.4.0",
     "react-dom": "^18",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7"

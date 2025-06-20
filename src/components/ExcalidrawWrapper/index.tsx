@@ -15,6 +15,7 @@ import { useRouter } from "next/router";
 import { useConfig } from "@/hooks/useConfig";
 
 import RemoteCursorOverlay from "./RemoteCursorOverlay";
+import ConfettiOverlay from "./ConfettiOverlay";
 
 const ExcalidrawWrapper: React.FC = () => {
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
@@ -234,6 +235,7 @@ const ExcalidrawWrapper: React.FC = () => {
         </Excalidraw>
 
         <RemoteCursorOverlay />
+        <ConfettiOverlay />
       </div>
 
       {/* Hidden canvas used to publish the video track */}

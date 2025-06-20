@@ -1,6 +1,5 @@
 import React from "react";
-import { useConnectionState, useTextStream } from "@livekit/components-react";
-import { ConnectionState } from "livekit-client";
+import { useLatestCommand } from "../../hooks/useLatestCommand";
 
 type CursorData = {
   x: string;
@@ -9,26 +8,13 @@ type CursorData = {
 };
 
 const RemoteCursorOverlay: React.FC<{}> = ({}) => {
-  const roomState = useConnectionState();
-  const { textStreams } = useTextStream("CURSOR_MOVE");
+  const { connected, latestCommand } =
+    useLatestCommand<CursorData>("CURSOR_MOVE");
 
-  const latestCursorMoveCommand = textStreams.at(-1);
-  let cursor: CursorData | null = null;
-  try {
-    cursor = latestCursorMoveCommand
-      ? JSON.parse(latestCursorMoveCommand.text)
-      : null;
-  } catch {
-    cursor = null;
-  }
+  if (!connected || !latestCommand || !latestCommand.visible) return null;
 
-  console.log(cursor);
-
-  if (roomState !== ConnectionState.Connected || !cursor || !cursor.visible)
-    return null;
-
-  const percentX = Math.max(0, Math.min(100, parseInt(cursor.x, 10)));
-  const percentY = Math.max(0, Math.min(100, parseInt(cursor.y, 10)));
+  const percentX = Math.max(0, Math.min(100, parseInt(latestCommand.x, 10)));
+  const percentY = Math.max(0, Math.min(100, parseInt(latestCommand.y, 10)));
 
   return (
     <div

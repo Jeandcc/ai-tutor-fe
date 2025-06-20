@@ -232,7 +232,8 @@ const ExcalidrawWrapper: React.FC = () => {
             <WelcomeScreen.Hints.HelpHint />
           </WelcomeScreen>
         </Excalidraw>
-        <RemoteCursorOverlay containerRef={excalidrawContainerRef} />
+
+        <RemoteCursorOverlay />
       </div>
 
       {/* Hidden canvas used to publish the video track */}

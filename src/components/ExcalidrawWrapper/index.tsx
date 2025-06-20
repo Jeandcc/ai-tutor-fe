@@ -14,6 +14,8 @@ import Image from "next/image";
 import { useRouter } from "next/router";
 import { useConfig } from "@/hooks/useConfig";
 
+import RemoteCursorOverlay from "./RemoteCursorOverlay";
+
 const ExcalidrawWrapper: React.FC = () => {
   const [excalidrawAPI, setExcalidrawAPI] = useState<ExcalidrawImperativeAPI>();
 
@@ -186,7 +188,7 @@ const ExcalidrawWrapper: React.FC = () => {
     <div style={{ height: "100%", width: "100%" }}>
       <div
         ref={excalidrawContainerRef}
-        style={{ height: "100%", width: "100%" }}
+        style={{ height: "100%", width: "100%", position: "relative" }}
       >
         <Excalidraw
           zenModeEnabled
@@ -230,6 +232,7 @@ const ExcalidrawWrapper: React.FC = () => {
             <WelcomeScreen.Hints.HelpHint />
           </WelcomeScreen>
         </Excalidraw>
+        <RemoteCursorOverlay containerRef={excalidrawContainerRef} />
       </div>
 
       {/* Hidden canvas used to publish the video track */}

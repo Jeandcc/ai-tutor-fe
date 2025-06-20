@@ -2,6 +2,9 @@ import React from "react";
 import { useConnectionState, useTextStream } from "@livekit/components-react";
 import { ConnectionState } from "livekit-client";
 
+// TODO: Add a random id to each command that comes in for usage in
+// hook-callers
+
 export function useLatestCommand<T = any>(
   commandType: string
 ): {

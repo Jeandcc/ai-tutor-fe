@@ -1,5 +1,5 @@
 import React from "react";
-import { useLatestCommand } from "../../hooks/useLatestCommand";
+import { useAICommand } from "../../hooks/useAICommand";
 
 type CursorData = {
   x: string;
@@ -8,8 +8,7 @@ type CursorData = {
 };
 
 const RemoteCursorOverlay: React.FC<{}> = ({}) => {
-  const { connected, latestCommand } =
-    useLatestCommand<CursorData>("CURSOR_MOVE");
+  const { connected, latestCommand } = useAICommand<CursorData>("CURSOR_MOVE");
 
   if (!connected || !latestCommand || !latestCommand.visible) return null;
 

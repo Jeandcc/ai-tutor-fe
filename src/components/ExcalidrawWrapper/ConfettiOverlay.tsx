@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Confetti from "react-confetti";
-import { useLatestCommand } from "../../hooks/useLatestCommand";
+
+import { useAICommand } from "../../hooks/useAICommand";
 
 interface ConfettiCommand {
   duration?: string;
@@ -8,27 +9,38 @@ interface ConfettiCommand {
 
 const ConfettiOverlay: React.FC = () => {
   const { connected, latestCommand } =
-    useLatestCommand<ConfettiCommand>("THROW_CONFETTI");
+    useAICommand<ConfettiCommand>("THROW_CONFETTI");
 
-  const [show, setShow] = useState(false);
+  const [showConfetti, setShowConfetti] = useState(false);
 
-  const [timeoutId, setTimeoutId] = useState<NodeJS.Timeout | null>(null);
+  const timeoutId = useRef<NodeJS.Timeout | null>(null);
+  const idOfLastCommand = useRef<null | string>();
 
   useEffect(() => {
-    if (connected && latestCommand) {
-      setShow(true);
-      if (timeoutId) clearTimeout(timeoutId);
-      const duration = parseFloat(latestCommand.duration || "1") * 1000;
-      const id = setTimeout(() => setShow(false), duration);
-      setTimeoutId(id);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [latestCommand, connected]);
+    if (
+      connected &&
+      latestCommand &&
+      idOfLastCommand.current !== latestCommand._feId
+    ) {
+      if (timeoutId.current) clearTimeout(timeoutId.current);
 
-  if (!show) return null;
+      const BASE_DURATION_MS = 4000;
+      const extraDurationMS = parseFloat(latestCommand.duration || "1") * 1000;
+      const totalConfettiDuration = BASE_DURATION_MS + extraDurationMS;
+
+      setShowConfetti(true);
+
+      idOfLastCommand.current = latestCommand._feId;
+      timeoutId.current = setTimeout(
+        () => setShowConfetti(false),
+        totalConfettiDuration
+      );
+    }
+  }, [latestCommand, connected]);
 
   return (
     <Confetti
+      numberOfPieces={showConfetti ? 200 : 0}
       style={{
         position: "fixed",
         top: 0,

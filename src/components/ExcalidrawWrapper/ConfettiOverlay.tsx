@@ -38,6 +38,10 @@ const ConfettiOverlay: React.FC = () => {
     }
   }, [latestCommand, connected]);
 
+  useEffect(() => {
+    console.log(showConfetti ? "Showing confetti" : "Hiding confetti");
+  }, [showConfetti]);
+
   return (
     <Confetti
       numberOfPieces={showConfetti ? 200 : 0}
